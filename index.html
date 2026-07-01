@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circulatory System — PET-FCE Style Examination</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
+  
+  :root {
+    --crimson: #B91C1C;
+    --crimson-light: #FEE2E2;
+    --navy: #1E3A5F;
+    --navy-light: #DBEAFE;
+    --emerald: #065F46;
+    --emerald-light: #D1FAE5;
+    --amber: #92400E;
+    --amber-light: #FEF3C7;
+    --slate: #334155;
+    --bg: #FAFAF8;
+    --card: #FFFFFF;
+    --border: #E2E8F0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    background: var(--bg);
+    color: var(--slate);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  /* ── HEADER ── */
+  .exam-header {
+    background: linear-gradient(135deg, var(--navy) 0%, #2D5A8E 100%);
+    color: white;
+    padding: 2rem 2rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .exam-header::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+    animation: pulse 8s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+  .exam-header h1 { font-size: 2rem; letter-spacing: 1px; position: relative; }
+  .exam-header .subtitle { font-size: 1rem; opacity: 0.85; margin-top: 0.3rem; position: relative; }
+  .exam-meta {
+    display: flex; justify-content: center; gap: 2rem;
+    margin-top: 1rem; font-size: 0.9rem; position: relative;
+  }
+  .exam-meta span { background: rgba(255,255,255,0.15); padding: 0.3rem 1rem; border-radius: 20px; }
+
+  /* ── TIMER ── */
+  .timer-bar {
+    background: var(--crimson);
+    color: white;
+    text-align: center;
+    padding: 0.7rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    transition: background 0.3s;
+  }
+  .timer-bar.warning { background: #D97706; }
+  .timer-bar.critical { background: #991B1B; animation: blink 1s infinite; }
+  @keyframes blink { 50%{opacity:0.7} }
+
+  /* ── PROGRESS ── */
+  .progress-container {
+    background: white; border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .progress-bar { flex: 1; height: 8px; background: #E5E7EB; border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--emerald), #10B981); border-radius: 4px; transition: width 0.4s; }
+  .progress-text { font-size: 0.85rem; color: #6B7280; min-width: 100px; text-align: right; }
+
+  /* ── SECTIONS ── */
+  .section-container { max-width: 900px; margin: 0 auto; padding: 1.5rem; }
+
+  .section-banner {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .section-banner.knowledge { border-color: var(--navy); }
+  .section-banner.skill { border-color: var(--emerald); }
+  .section-banner.aptitude { border-color: var(--crimson); }
+
+  .section-banner h2 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .section-banner .section-desc { font-size: 0.9rem; color: #6B7280; }
+  .section-banner .section-meta {
+    display: flex; gap: 1.5rem; margin-top: 0.8rem;
+    font-size: 0.8rem; color: #9CA3AF;
+  }
+  .section-banner .section-meta span { display: flex; align-items: center; gap: 0.3rem; }
+
+  /* ── DIAGRAM BOX ── */
+  .diagram-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .diagram-box h3 { font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem; }
+
+  /* SVG Diagrams */
+  .heart-diagram { max-width: 500px; margin: 0 auto; }
+  .blood-diagram { max-width: 600px; margin: 0 auto; }
+  .vessel-diagram { max-width: 700px; margin: 0 auto; }
+
+  /* ── QUESTION CARD ── */
+  .question-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .question-card:hover { border-color: #CBD5E1; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .question-card.answered { border-left: 4px solid var(--emerald); }
+  .question-card.flagged { border-left: 4px solid #D97706; background: #FFFBEB; }
+
+  .q-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 0.8rem;
+  }
+  .q-number {
+    background: var(--navy); color: white;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: bold; flex-shrink: 0;
+  }
+  .q-number.section-k { background: var(--navy); }
+  .q-number.section-s { background: var(--emerald); }
+  .q-number.section-a { background: var(--crimson); }
+
+  .q-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .q-tag {
+    font-size: 0.65rem; padding: 0.15rem 0.5rem;
+    border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .tag-bloom { background: #EDE9FE; color: #6D28D9; }
+  .tag-ksa { background: #DBEAFE; color: #1D4ED8; }
+  .tag-21c { background: #D1FAE5; color: #065F46; }
+  .tag-5e { background: #FEF3C7; color: #92400E; }
+
+  .q-text { font-size: 1.05rem; margin-bottom: 1rem; line-height: 1.8; }
+  .q-text strong { color: var(--navy); }
+
+  /* Table in question */
+  .q-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.95rem; }
+  .q-table th {
+    background: var(--navy); color: white;
+    padding: 0.6rem 1rem; text-align: left; font-weight: 600;
+  }
+  .q-table td { padding: 0.5rem 1rem; border-bottom: 1px solid #E5E7EB; }
+  .q-table tr:nth-child(even) { background: #F8FAFC; }
+  .q-table tr:hover { background: #EFF6FF; }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .option {
+    display: flex; align-items: flex-start; gap: 0.7rem;
+    padding: 0.7rem 1rem; border: 1px solid #E5E7EB;
+    border-radius: 8px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .option:hover { background: #EFF6FF; border-color: #93C5FD; }
+  .option.selected { background: #DBEAFE; border-color: #3B82F6; }
+  .option.correct { background: #D1FAE5; border-color: #10B981; }
+  .option.incorrect { background: #FEE2E2; border-color: #EF4444; }
+  .option input[type="radio"] { margin-top: 0.25rem; accent-color: var(--navy); }
+  .option-label { font-size: 0.95rem; }
+
+  /* Flag button */
+  .flag-btn {
+    background: none; border: 1px solid #D1D5DB; border-radius: 6px;
+    padding: 0.3rem 0.6rem; font-size: 0.75rem; cursor: pointer;
+    color: #6B7280; transition: all 0.15s;
+  }
+  .flag-btn:hover { background: #FEF3C7; border-color: #F59E0B; color: #92400E; }
+  .flag-btn.flagged { background: #FEF3C7; border-color: #F59E0B; color: #92400E; }
+
+  /* ── PASSAGE BOX ── */
+  .passage-box {
+    background: #F8FAFC; border: 1px solid #E2E8F0;
+    border-radius: 8px; padding: 1.2rem;
+    margin-bottom: 1rem; font-size: 0.95rem;
+    line-height: 1.8; font-style: italic;
+  }
+  .passage-box .passage-title { font-weight: bold; font-style: normal; color: var(--navy); margin-bottom: 0.5rem; }
+
+  /* ── SUBMIT AREA ── */
+  .submit-area {
+    max-width: 900px; margin: 2rem auto;
+    padding: 0 1.5rem 3rem;
+    text-align: center;
+  }
+  .submit-btn {
+    background: linear-gradient(135deg, var(--navy), #2D5A8E);
+    color: white; border: none;
+    padding: 1rem 3rem; border-radius: 10px;
+    font-size: 1.2rem; font-family: inherit;
+    cursor: pointer; letter-spacing: 1px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 15px rgba(30,58,95,0.3);
+  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30,58,95,0.4); }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* ── RESULTS ── */
+  .results-overlay {
+    display: none; position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 200;
+    justify-content: center; align-items: flex-start;
+    padding: 2rem; overflow-y: auto;
+  }
+  .results-overlay.show { display: flex; }
+
+  .results-card {
+    background: white; border-radius: 16px;
+    padding: 2.5rem; max-width: 800px; width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: slideUp 0.4s ease-out;
+  }
+  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } }
+
+  .results-card h2 { font-size: 1.8rem; color: var(--navy); text-align: center; margin-bottom: 0.5rem; }
+  .results-subtitle { text-align: center; color: #6B7280; margin-bottom: 2rem; }
+
+  .score-circle {
+    width: 180px; height: 180px; border-radius: 50%;
+    margin: 0 auto 2rem; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border: 8px solid; font-size: 2.5rem; font-weight: bold;
+  }
+  .score-circle .score-label { font-size: 0.85rem; font-weight: normal; color: #6B7280; }
+  .score-excellent { border-color: #10B981; color: #065F46; }
+  .score-good { border-color: #3B82F6; color: #1D4ED8; }
+  .score-fair { border-color: #F59E0B; color: #92400E; }
+  .score-poor { border-color: #EF4444; color: #991B1B; }
+
+  /* Section breakdown */
+  .section-breakdown { margin-bottom: 2rem; }
+  .section-breakdown h3 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--slate); }
+  .breakdown-row {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 0.8rem; padding: 0.8rem 1rem;
+    background: #F8FAFC; border-radius: 8px;
+  }
+  .breakdown-label { min-width: 160px; font-weight: 600; font-size: 0.9rem; }
+  .breakdown-bar { flex: 1; height: 10px; background: #E5E7EB; border-radius: 5px; overflow: hidden; }
+  .breakdown-fill { height: 100%; border-radius: 5px; transition: width 1s ease-out; }
+  .breakdown-score { min-width: 50px; text-align: right; font-weight: bold; font-size: 0.9rem; }
+
+  /* Bloom breakdown */
+  .bloom-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.8rem; margin-bottom: 2rem;
+  }
+  .bloom-card {
+    text-align: center; padding: 1rem;
+    border-radius: 10px; border: 1px solid var(--border);
+  }
+  .bloom-card .bloom-level { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #6B7280; }
+  .bloom-card .bloom-score { font-size: 1.5rem; font-weight: bold; margin: 0.3rem 0; }
+
+  /* Strengths & Weaknesses */
+  .sw-section { margin-bottom: 1.5rem; }
+  .sw-section h3 { font-size: 1.1rem; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+  .sw-item {
+    padding: 0.6rem 1rem; margin-bottom: 0.4rem;
+    border-radius: 6px; font-size: 0.9rem;
+  }
+  .sw-strength { background: #D1FAE5; color: #065F46; border-left: 3px solid #10B981; }
+  .sw-weakness { background: #FEE2E2; color: #991B1B; border-left: 3px solid #EF4444; }
+  .sw-improve { background: #DBEAFE; color: #1E40AF; border-left: 3px solid #3B82F6; }
+
+  /* Download button */
+  .download-btn {
+    background: #065F46; color: white; border: none;
+    padding: 0.8rem 2rem; border-radius: 8px;
+    font-size: 1rem; font-family: inherit;
+    cursor: pointer; margin-top: 1rem;
+    transition: background 0.15s;
+  }
+  .download-btn:hover { background: #047857; }
+
+  .close-results {
+    background: none; border: 1px solid #D1D5DB;
+    padding: 0.6rem 1.5rem; border-radius: 8px;
+    font-size: 0.9rem; cursor: pointer; margin-top: 0.5rem;
+    font-family: inherit;
+  }
+
+  /* ── INFOGRAPHIC TABLE ── */
+  .info-table {
+    width: 100%; border-collapse: collapse; margin: 1rem 0;
+    border-radius: 8px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .info-table th {
+    background: linear-gradient(135deg, var(--navy), #2D5A8E);
+    color: white; padding: 0.7rem 1rem;
+    font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .info-table td { padding: 0.6rem 1rem; border-bottom: 1px solid #E5E7EB; font-size: 0.9rem; }
+  .info-table tr:nth-child(even) { background: #F8FAFC; }
+
+  /* ── NAV DOTS ── */
+  .nav-dots {
+    position: fixed; right: 1rem; top: 50%;
+    transform: translateY(-50%); z-index: 50;
+    display: flex; flex-direction: column; gap: 0.3rem;
+  }
+  .nav-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #CBD5E1; cursor: pointer;
+    transition: all 0.2s; border: none;
+  }
+  .nav-dot.answered { background: #10B981; }
+  .nav-dot.flagged { background: #F59E0B; }
+  .nav-dot:hover { transform: scale(1.3); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .exam-header h1 { font-size: 1.4rem; }
+    .exam-meta { flex-direction: column; gap: 0.5rem; }
+    .section-container { padding: 1rem; }
+    .question-card { padding: 1rem 1.2rem; }
+    .nav-dots { display: none; }
+  }
+
+  /* ── ARTWORK: Blood Cell SVG ── */
+  .blood-art { text-align: center; margin: 1rem 0; }
+  .blood-art svg { max-width: 100%; }
+
+  /* ── Comparison Diagram ── */
+  .comparison-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1rem; margin: 1rem 0;
+  }
+  .comparison-card {
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 1rem; text-align: center;
+  }
+  .comparison-card h4 { color: var(--navy); margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .comparison-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow-diagram {
+    display: flex; align-items: center; justify-content: center;
+    flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0;
+  }
+  .flow-step {
+    background: white; border: 2px solid var(--navy);
+    border-radius: 8px; padding: 0.5rem 1rem;
+    font-size: 0.85rem; font-weight: 600;
+  }
+  .flow-arrow { font-size: 1.5rem; color: var(--navy); }
+
+  /* Print styles */
+  @media print {
+    .timer-bar, .progress-container, .nav-dots, .flag-btn, .submit-area { display: none; }
+    .question-card { break-inside: avoid; }
+    .results-overlay { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="exam-header">
+  <h1>🫀 The Human Blood Circulatory System</h1>
+  <div class="subtitle">PET-FCE Style Examination — Knowledge · Skill · Aptitude</div>
+  <div class="exam-meta">
+    <span>📋 45 Questions</span>
+    <span>⏱️ 40 Minutes</span>
+    <span>📐 K-S-A Framework</span>
+    <span>🧠 Bloom's Taxonomy</span>
+  </div>
+</div>
+
+<!-- TIMER -->
+<div class="timer-bar" id="timerBar">
+  <span id="timerIcon">⏱️</span> TIME REMAINING: <span id="timerDisplay">40:00</span>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-container">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="progress-text" id="progressText">0 / 45 answered</div>
+</div>
+
+<!-- EXAM CONTENT -->
+<div class="section-container" id="examContent">
+
+<!-- ═══════════════ SECTION 1: KNOWLEDGE (Q1–15) ═══════════════ -->
+<div class="section-banner knowledge">
+  <h2>📘 Section A — Knowledge</h2>
+  <div class="section-desc">Recall, recognition, and comprehension of circulatory system facts, structures, and definitions.</div>
+  <div class="section-meta">
+    <span>🧠 Bloom's: Remember & Understand</span>
+    <span>📊 K-S-A: Knowledge</span>
+    <span>❓ 15 Questions</span>
+  </div>
+</div>
+
+<!-- Heart Diagram -->
+<div class="diagram-box">
+  <h3>Figure 1: The Human Heart — Structure & Blood Flow</h3>
+  <svg class="heart-diagram" viewBox="0 0 500 350" xmlns="http://www.w3.org/2000/svg">
+    <!-- Heart outline -->
+    <path d="M250 50 C200 20, 120 30, 100 100 C80 170, 120 250, 250 320 C380 250, 420 170, 400 100 C380 30, 300 20, 250 50Z" fill="#FEE2E2" stroke="#B91C1C" stroke-width="2"/>
+    <!-- Septum -->
+    <line x1="250" y1="70" x2="250" y2="300" stroke="#B91C1C" stroke-width="2" stroke-dasharray="6,4"/>
+    <!-- Horizontal divider -->
+    <line x1="130" y1="180" x2="370" y2="180" stroke="#B91C1C" stroke-width="1.5" stroke-dasharray="4,4"/>
+    <!-- Chambers -->
+    <text x="170" y="140" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E3A5F">RIGHT ATRIUM</text>
+    <text x="330" y="140" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E3A5F">LEFT ATRIUM</text>
+    <text x="170" y="240" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E3A5F">RIGHT VENTRICLE</text>
+    <text x="330" y="240" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E3A5F">LEFT VENTRICLE</text>
+    <!-- Valves -->
+    <text x="250" y="165" text-anchor="middle" font-size="9" fill="#B91C1C">Tricuspid | Mitral</text>
+    <text x="250" y="275" text-anchor="middle" font-size="9" fill="#B91C1C">Pulmonary | Aortic</text>
+    <!-- Flow arrows -->
+    <path d="M80 130 L130 130" stroke="#3B82F6" stroke-width="2.5" marker-end="url(#blueArrow)"/>
+    <path d="M370 130 L420 130" stroke="#EF4444" stroke-width="2.5" marker-end="url(#redArrow)"/>
+    <path d="M250 300 L250 335" stroke="#3B82F6" stroke-width="2.5" marker-end="url(#blueArrow)"/>
+    <!-- Labels -->
+    <text x="60" y="125" font-size="10" fill="#3B82F6" font-weight="bold">Deoxygenated</text>
+    <text x="60" y="138" font-size="10" fill="#3B82F6">from body</text>
+    <text x="400" y="125" font-size="10" fill="#EF4444" font-weight="bold">Oxygenated</text>
+    <text x="400" y="138" font-size="10" fill="#EF4444">to body</text>
+    <text x="250" y="345" text-anchor="middle" font-size="10" fill="#3B82F6">To Lungs</text>
+    <!-- Arrow markers -->
+    <defs>
+      <marker id="blueArrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#3B82F6"/></marker>
+      <marker id="redArrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#EF4444"/></marker>
+    </defs>
+  </svg>
+</div>
+
+<!-- Q1 -->
+<div class="question-card" id="q1">
+  <div class="q-header">
+    <div class="q-number section-k">1</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Remember</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(1)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">The circulatory system is described as a continuous biological network. According to the passage, which three pillars form the foundation of this system?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q1" value="A"><span class="option-label">A. Brain, Spinal Cord, Nerves</span></label>
+    <label class="option"><input type="radio" name="q1" value="B"><span class="option-label">B. Heart, Blood, Blood Vessels</span></label>
+    <label class="option"><input type="radio" name="q1" value="C"><span class="option-label">C. Lungs, Liver, Kidneys</span></label>
+    <label class="option"><input type="radio" name="q1" value="D"><span class="option-label">D. Arteries, Capillaries, Lymph Nodes</span></label>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="question-card" id="q2">
+  <div class="q-header">
+    <div class="q-number section-k">2</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Remember</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(2)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Blood is classified as a liquid tissue that makes up approximately what percentage of total body weight?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q2" value="A"><span class="option-label">A. 1–2%</span></label>
+    <label class="option"><input type="radio" name="q2" value="B"><span class="option-label">B. 7–8%</span></label>
+    <label class="option"><input type="radio" name="q2" value="C"><span class="option-label">C. 15–16%</span></label>
+    <label class="option"><input type="radio" name="q2" value="D"><span class="option-label">D. 25–30%</span></label>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="question-card" id="q3">
+  <div class="q-header">
+    <div class="q-number section-k">3</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Remember</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(3)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">How many chambers does the human heart contain?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q3" value="A"><span class="option-label">A. 2</span></label>
+    <label class="option"><input type="radio" name="q3" value="B"><span class="option-label">B. 3</span></label>
+    <label class="option"><input type="radio" name="q3" value="C"><span class="option-label">C. 4</span></label>
+    <label class="option"><input type="radio" name="q3" value="D"><span class="option-label">D. 5</span></label>
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="question-card" id="q4">
+  <div class="q-header">
+    <div class="q-number section-k">4</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Understand</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(4)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">The diagram below shows blood composition. Match each component to its correct percentage.</div>
+  <table class="q-table">
+    <tr><th>Component</th><th>Percentage</th></tr>
+    <tr><td>Plasma</td><td>① 45%</td></tr>
+    <tr><td>Red Blood Cells</td><td>② &lt;1%</td></tr>
+    <tr><td>White Blood Cells & Platelets</td><td>③ 55%</td></tr>
+  </table>
+  <div class="q-text" style="margin-top:0.5rem;">Which option shows the correct matching?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q4" value="A"><span class="option-label">A. Plasma→③, RBCs→①, WBCs→②</span></label>
+    <label class="option"><input type="radio" name="q4" value="B"><span class="option-label">B. Plasma→①, RBCs→③, WBCs→②</span></label>
+    <label class="option"><input type="radio" name="q4" value="C"><span class="option-label">C. Plasma→②, RBCs→①, WBCs→③</span></label>
+    <label class="option"><input type="radio" name="q4" value="D"><span class="option-label">D. Plasma→③, RBCs→②, WBCs→①</span></label>
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="question-card" id="q5">
+  <div class="q-header">
+    <div class="q-number section-k">5</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Remember</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(5)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">What is the primary protein in Red Blood Cells that binds directly with oxygen?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q5" value="A"><span class="option-label">A. Collagen</span></label>
+    <label class="option"><input type="radio" name="q5" value="B"><span class="option-label">B. Hemoglobin</span></label>
+    <label class="option"><input type="radio" name="q5" value="C"><span class="option-label">C. Fibrinogen</span></label>
+    <label class="option"><input type="radio" name="q5" value="D"><span class="option-label">D. Albumin</span></label>
+  </div>
+</div>
+
+<!-- Q6 -->
+<div class="question-card" id="q6">
+  <div class="q-header">
+    <div class="q-number section-k">6</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Remember</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(6)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Which type of White Blood Cell is described as the <strong>largest</strong>, moving into tissues to become macrophages ("clean-up crews")?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q6" value="A"><span class="option-label">A. Neutrophils</span></label>
+    <label class="option"><input type="radio" name="q6" value="B"><span class="option-label">B. Lymphocytes</span></label>
+    <label class="option"><input type="radio" name="q6" value="C"><span class="option-label">C. Monocytes</span></label>
+    <label class="option"><input type="radio" name="q6" value="D"><span class="option-label">D. Eosinophils</span></label>
+  </div>
+</div>
+
+<!-- Q7 -->
+<div class="question-card" id="q7">
+  <div class="q-header">
+    <div class="q-number section-k">7</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Understand</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(7)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Arrange the four stages of the clotting cascade in the correct order:</div>
+  <div class="flow-diagram">
+    <div class="flow-step">① Hemostasis</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">② Aggregation</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">③ Injury</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">④ Fibrin Release</div>
+  </div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q7" value="A"><span class="option-label">A. ③ → ② → ④ → ①</span></label>
+    <label class="option"><input type="radio" name="q7" value="B"><span class="option-label">B. ③ → ④ → ② → ①</span></label>
+    <label class="option"><input type="radio" name="q7" value="C"><span class="option-label">C. ② → ③ → ④ → ①</span></label>
+    <label class="option"><input type="radio" name="q7" value="D"><span class="option-label">D. ① → ② → ③ → ④</span></label>
+  </div>
+</div>
+
+<!-- Q8 -->
+<div class="question-card" id="q8">
+  <div class="q-header">
+    <div class="q-number section-k">8</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Understand</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(8)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Plasma is described as "The Liquid Carrier." Which of the following is <strong>NOT</strong> a function of plasma?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q8" value="A"><span class="option-label">A. Carrying nutrients (glucose, amino acids, vitamins) to cells</span></label>
+    <label class="option"><input type="radio" name="q8" value="B"><span class="option-label">B. Containing antibodies and clotting factors</span></label>
+    <label class="option"><input type="radio" name="q8" value="C"><span class="option-label">C. Binding oxygen via hemoglobin molecules</span></label>
+    <label class="option"><input type="radio" name="q8" value="D"><span class="option-label">D. Maintaining body temperature and blood pressure</span></label>
+  </div>
+</div>
+
+<!-- Vessel Comparison Diagram -->
+<div class="diagram-box">
+  <h3>Figure 2: Structural Comparison — Arteries, Veins & Capillaries</h3>
+  <div class="comparison-grid">
+    <div class="comparison-card">
+      <div class="icon">🔴</div>
+      <h4>Artery</h4>
+      <svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="25" fill="none" stroke="#B91C1C" stroke-width="8"/><circle cx="40" cy="40" r="10" fill="#FEE2E2"/></svg>
+      <p style="font-size:0.8rem;margin-top:0.5rem;">Round · Thick walls · Narrow lumen · No valves</p>
+    </div>
+    <div class="comparison-card">
+      <div class="icon">🔵</div>
+      <h4>Vein</h4>
+      <svg width="80" height="80" viewBox="0 0 80 80"><ellipse cx="40" cy="40" rx="30" ry="20" fill="none" stroke="#1D4ED8" stroke-width="4"/><line x1="20" y1="35" x2="20" y2="45" stroke="#1D4ED8" stroke-width="2"/><line x1="60" y1="35" x2="60" y2="45" stroke="#1D4ED8" stroke-width="2"/></svg>
+      <p style="font-size:0.8rem;margin-top:0.5rem;">Irregular · Thin walls · Wide lumen · Has valves</p>
+    </div>
+    <div class="comparison-card">
+      <div class="icon">🟡</div>
+      <h4>Capillary</h4>
+      <svg width="80" height="80" viewBox="0 0 80 80"><line x1="10" y1="40" x2="70" y2="40" stroke="#D97706" stroke-width="3"/><circle cx="25" cy="40" r="3" fill="#EF4444"/><circle cx="40" cy="40" r="3" fill="#EF4444"/><circle cx="55" cy="40" r="3" fill="#EF4444"/></svg>
+      <p style="font-size:0.8rem;margin-top:0.5rem;">Hair-like · Ultra-thin walls · Very narrow · No valves</p>
+    </div>
+  </div>
+</div>
+
+<!-- Q9 -->
+<div class="question-card" id="q9">
+  <div class="q-header">
+    <div class="q-number section-k">9</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Understand</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(9)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Using the vessel comparison table below, which vessel type has <strong>thick walls, a narrow lumen, and no valves</strong>?</div>
+  <table class="info-table">
+    <tr><th>Characteristic</th><th>Artery</th><th>Vein</th><th>Capillary</th></tr>
+    <tr><td>Wall thickness</td><td>Thick</td><td>Thin</td><td>Very thin</td></tr>
+    <tr><td>Valves</td><td>Absent</td><td>Present</td><td>Absent</td></tr>
+    <tr><td>Lumen</td><td>Narrow</td><td>Wide</td><td>Very narrow</td></tr>
+    <tr><td>Oxygen content</td><td>High</td><td>Low</td><td>Varies</td></tr>
+  </table>
+  <div class="options">
+    <label class="option"><input type="radio" name="q9" value="A"><span class="option-label">A. Artery</span></label>
+    <label class="option"><input type="radio" name="q9" value="B"><span class="option-label">B. Vein</span></label>
+    <label class="option"><input type="radio" name="q9" value="C"><span class="option-label">C. Capillary</span></label>
+    <label class="option"><input type="radio" name="q9" value="D"><span class="option-label">D. Venule</span></label>
+  </div>
+</div>
+
+<!-- Q10 -->
+<div class="question-card" id="q10">
+  <div class="q-header">
+    <div class="q-number section-k">10</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Remember</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(10)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Which blood type is known as the <strong>Universal Donor</strong> because it lacks A, B, and Rh markers?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q10" value="A"><span class="option-label">A. AB+</span></label>
+    <label class="option"><input type="radio" name="q10" value="B"><span class="option-label">B. O+</span></label>
+    <label class="option"><input type="radio" name="q10" value="C"><span class="option-label">C. O−</span></label>
+    <label class="option"><input type="radio" name="q10" value="D"><span class="option-label">D. A−</span></label>
+  </div>
+</div>
+
+<!-- Q11 -->
+<div class="question-card" id="q11">
+  <div class="q-header">
+    <div class="q-number section-k">11</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Remember</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(11)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Combining the ABO and Rh systems results in how many common blood types?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q11" value="A"><span class="option-label">A. 4</span></label>
+    <label class="option"><input type="radio" name="q11" value="B"><span class="option-label">B. 6</span></label>
+    <label class="option"><input type="radio" name="q11" value="C"><span class="option-label">C. 8</span></label>
+    <label class="option"><input type="radio" name="q11" value="D"><span class="option-label">D. 12</span></label>
+  </div>
+</div>
+
+<!-- Q12 -->
+<div class="question-card" id="q12">
+  <div class="q-header">
+    <div class="q-number section-k">12</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Understand</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(12)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">What is the role of one-way valves in veins?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q12" value="A"><span class="option-label">A. To increase blood pressure</span></label>
+    <label class="option"><input type="radio" name="q12" value="B"><span class="option-label">B. To prevent blood from flowing backward against gravity</span></label>
+    <label class="option"><input type="radio" name="q12" value="C"><span class="option-label">C. To oxygenate the blood</span></label>
+    <label class="option"><input type="radio" name="q12" value="D"><span class="option-label">D. To filter waste products</span></label>
+  </div>
+</div>
+
+<!-- Q13 -->
+<div class="question-card" id="q13">
+  <div class="q-header">
+    <div class="q-number section-k">13</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Remember</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(13)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Neutrophils are the most abundant type of White Blood Cell. Approximately what percentage of WBCs do they constitute?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q13" value="A"><span class="option-label">A. 10–20%</span></label>
+    <label class="option"><input type="radio" name="q13" value="B"><span class="option-label">B. 30–40%</span></label>
+    <label class="option"><input type="radio" name="q13" value="C"><span class="option-label">C. 50–70%</span></label>
+    <label class="option"><input type="radio" name="q13" value="D"><span class="option-label">D. 80–90%</span></label>
+  </div>
+</div>
+
+<!-- Q14 -->
+<div class="question-card" id="q14">
+  <div class="q-header">
+    <div class="q-number section-k">14</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Understand</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(14)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Veins act as a flexible reservoir, holding approximately what percentage of the body's total blood volume?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q14" value="A"><span class="option-label">A. 10–20%</span></label>
+    <label class="option"><input type="radio" name="q14" value="B"><span class="option-label">B. 30–40%</span></label>
+    <label class="option"><input type="radio" name="q14" value="C"><span class="option-label">C. 60–70%</span></label>
+    <label class="option"><input type="radio" name="q14" value="D"><span class="option-label">D. 80–90%</span></label>
+  </div>
+</div>
+
+<!-- Q15 -->
+<div class="question-card" id="q15">
+  <div class="q-header">
+    <div class="q-number section-k">15</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Remember</span>
+        <span class="q-tag tag-ksa">Knowledge</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(15)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Lymphocytes include two key sub-types: B cells and T cells. What is the primary function of B cells?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q15" value="A"><span class="option-label">A. Destroy infected cells directly</span></label>
+    <label class="option"><input type="radio" name="q15" value="B"><span class="option-label">B. Produce antibodies to attack antigens</span></label>
+    <label class="option"><input type="radio" name="q15" value="C"><span class="option-label">C. Carry oxygen to tissues</span></label>
+    <label class="option"><input type="radio" name="q15" value="D"><span class="option-label">D. Form blood clots at wound sites</span></label>
+  </div>
+</div>
+
+<!-- ═══════════════ SECTION 2: SKILL (Q16–30) ═══════════════ -->
+<div class="section-banner skill">
+  <h2>📗 Section B — Skill</h2>
+  <div class="section-desc">Application, analysis, and problem-solving using circulatory system concepts. Includes data interpretation, diagram analysis, and clinical reasoning.</div>
+  <div class="section-meta">
+    <span>🧠 Bloom's: Apply & Analyse</span>
+    <span>📊 K-S-A: Skill</span>
+    <span>🔬 5E: Explore & Explain</span>
+    <span>❓ 15 Questions</span>
+  </div>
+</div>
+
+<!-- Blood Compatibility Table -->
+<div class="diagram-box">
+  <h3>Figure 3: Blood Transfusion Compatibility Matrix</h3>
+  <table class="info-table" style="font-size:0.85rem;">
+    <tr><th>Recipient ↓ \ Donor →</th><th>O−</th><th>O+</th><th>A−</th><th>A+</th><th>B−</th><th>B+</th><th>AB−</th><th>AB+</th></tr>
+    <tr><td><strong>O−</strong></td><td>✔️</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td><strong>O+</strong></td><td>✔️</td><td>✔️</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td><strong>A−</strong></td><td>✔️</td><td></td><td>✔️</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td><strong>A+</strong></td><td>✔️</td><td>✔️</td><td>✔️</td><td>✔️</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td><strong>B−</strong></td><td>✔️</td><td></td><td></td><td></td><td>✔️</td><td></td><td></td><td></td></tr>
+    <tr><td><strong>B+</strong></td><td>✔️</td><td>✔️</td><td></td><td></td><td>✔️</td><td>✔️</td><td></td><td></td></tr>
+    <tr><td><strong>AB−</strong></td><td>✔️</td><td></td><td>✔️</td><td></td><td>✔️</td><td></td><td>✔️</td><td></td></tr>
+    <tr><td><strong>AB+</strong></td><td>✔️</td><td>✔️</td><td>✔️</td><td>✔️</td><td>✔️</td><td>✔️</td><td>✔️</td><td>✔️</td></tr>
+  </table>
+</div>
+
+<!-- Q16 -->
+<div class="question-card" id="q16">
+  <div class="q-header">
+    <div class="q-number section-s">16</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Apply</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-21c">Data Literacy</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(16)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Using the compatibility matrix above, a patient with blood type <strong>B+</strong> needs an emergency transfusion. From the following available donors, which one's blood would cause an <strong>immune rejection</strong>?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q16" value="A"><span class="option-label">A. O− donor</span></label>
+    <label class="option"><input type="radio" name="q16" value="B"><span class="option-label">B. O+ donor</span></label>
+    <label class="option"><input type="radio" name="q16" value="C"><span class="option-label">C. A+ donor</span></label>
+    <label class="option"><input type="radio" name="q16" value="D"><span class="option-label">D. B+ donor</span></label>
+  </div>
+</div>
+
+<!-- Q17 -->
+<div class="question-card" id="q17">
+  <div class="q-header">
+    <div class="q-number section-s">17</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Analyse</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-21c">Critical Thinking</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(17)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">The passage describes four steps of immune rejection when incompatible blood is transfused. What is the <strong>direct consequence</strong> of agglutination (Step 3)?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q17" value="A"><span class="option-label">A. The immune system identifies foreign markers</span></label>
+    <label class="option"><input type="radio" name="q17" value="B"><span class="option-label">B. Antibodies are deployed to attack foreign cells</span></label>
+    <label class="option"><input type="radio" name="q17" value="C"><span class="option-label">C. Donated RBCs clump together, potentially blocking blood vessels</span></label>
+    <label class="option"><input type="radio" name="q17" value="D"><span class="option-label">D. The patient's blood pressure drops suddenly</span></label>
+  </div>
+</div>
+
+<!-- Q18 -->
+<div class="question-card" id="q18">
+  <div class="q-header">
+    <div class="q-number section-s">18</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Apply</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-5e">Explore</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(18)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Trace the path of <strong>deoxygenated blood</strong> from the body back to the lungs. Which sequence is correct?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q18" value="A"><span class="option-label">A. Body → Left Atrium → Left Ventricle → Lungs</span></label>
+    <label class="option"><input type="radio" name="q18" value="B"><span class="option-label">B. Body → Right Atrium → Right Ventricle → Lungs</span></label>
+    <label class="option"><input type="radio" name="q18" value="C"><span class="option-label">C. Body → Right Ventricle → Right Atrium → Lungs</span></label>
+    <label class="option"><input type="radio" name="q18" value="D"><span class="option-label">D. Body → Left Ventricle → Left Atrium → Lungs</span></label>
+  </div>
+</div>
+
+<!-- Q19 -->
+<div class="question-card" id="q19">
+  <div class="q-header">
+    <div class="q-number section-s">19</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Analyse</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-21c">Systems Thinking</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(19)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">A patient is diagnosed with <strong>anemia</strong>. Based on the passage, which component of blood is primarily affected, and what is the resulting symptom?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q19" value="A"><span class="option-label">A. Low plasma → reduced blood pressure</span></label>
+    <label class="option"><input type="radio" name="q19" value="B"><span class="option-label">B. Low RBCs/hemoglobin → less oxygen reaching the body</span></label>
+    <label class="option"><input type="radio" name="q19" value="C"><span class="option-label">C. Low WBCs → weakened immune system</span></label>
+    <label class="option"><input type="radio" name="q19" value="D"><span class="option-label">D. Low platelets → excessive bleeding</span></label>
+  </div>
+</div>
+
+<!-- Q20 -->
+<div class="question-card" id="q20">
+  <div class="q-header">
+    <div class="q-number section-s">20</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Apply</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-21c">Problem Solving</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(20)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">In the capillary exchange diagram, oxygen and nutrients move from blood into cells, while CO₂ and lactic acid move into the blood. This process is best described as:</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q20" value="A"><span class="option-label">A. Active transport requiring ATP</span></label>
+    <label class="option"><input type="radio" name="q20" value="B"><span class="option-label">B. Passive diffusion across concentration gradients</span></label>
+    <label class="option"><input type="radio" name="q20" value="C"><span class="option-label">C. Osmosis through semi-permeable membranes</span></label>
+    <label class="option"><input type="radio" name="q20" value="D"><span class="option-label">D. Facilitated transport via carrier proteins</span></label>
+  </div>
+</div>
+
+<!-- Q21 -->
+<div class="question-card" id="q21">
+  <div class="q-header">
+    <div class="q-number section-s">21</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Analyse</span>
+        <span class="q-tag tag-ksa">Skill</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(21)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Why are arterioles described as "control valves" in the circulatory system?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q21" value="A"><span class="option-label">A. They prevent blood from flowing backward</span></label>
+    <label class="option"><input type="radio" name="q21" value="B"><span class="option-label">B. They regulate blood distribution based on metabolic needs via smooth muscle contraction</span></label>
+    <label class="option"><input type="radio" name="q21" value="C"><span class="option-label">C. They oxygenate the blood before it reaches tissues</span></label>
+    <label class="option"><input type="radio" name="q21" value="D"><span class="option-label">D. They filter waste products from the blood</span></label>
+  </div>
+</div>
+
+<!-- Q22 -->
+<div class="question-card" id="q22">
+  <div class="q-header">
+    <div class="q-number section-s">22</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Apply</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-21c">Data Literacy</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(22)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Study the vessel comparison table (Figure 2). A doctor observes a blood vessel with <strong>irregular shape, thin walls, and valves present</strong>. What type of vessel is this?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q22" value="A"><span class="option-label">A. Artery</span></label>
+    <label class="option"><input type="radio" name="q22" value="B"><span class="option-label">B. Vein</span></label>
+    <label class="option"><input type="radio" name="q22" value="C"><span class="option-label">C. Capillary</span></label>
+    <label class="option"><input type="radio" name="q22" value="D"><span class="option-label">D. Arteriole</span></label>
+  </div>
+</div>
+
+<!-- Q23 -->
+<div class="question-card" id="q23">
+  <div class="q-header">
+    <div class="q-number section-s">23</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Analyse</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-21c">Clinical Reasoning</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(23)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">A patient with <strong>hypertension</strong> has blood vessels under constant high pressure. According to the passage, what is the long-term effect on the heart?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q23" value="A"><span class="option-label">A. The heart becomes weaker and pumps less blood</span></label>
+    <label class="option"><input type="radio" name="q23" value="B"><span class="option-label">B. The heart is forced to work harder, causing long-term damage to blood vessels</span></label>
+    <label class="option"><input type="radio" name="q23" value="C"><span class="option-label">C. The heart valves stop functioning properly</span></label>
+    <label class="option"><input type="radio" name="q23" value="D"><span class="option-label">D. The heart chambers enlarge symmetrically</span></label>
+  </div>
+</div>
+
+<!-- Q24 -->
+<div class="question-card" id="q24">
+  <div class="q-header">
+    <div class="q-number section-s">24</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Apply</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-5e">Explain</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(24)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">The passage states that arteries have "thick, highly elastic walls" that "absorb massive pressure surges from heart contractions." This elasticity primarily serves to:</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q24" value="A"><span class="option-label">A. Increase the speed of blood flow</span></label>
+    <label class="option"><input type="radio" name="q24" value="B"><span class="option-label">B. Smooth pulsatile flow into a continuous stream</span></label>
+    <label class="option"><input type="radio" name="q24" value="C"><span class="option-label">C. Prevent blood clotting inside the vessel</span></label>
+    <label class="option"><input type="radio" name="q24" value="D"><span class="option-label">D. Allow gas exchange with surrounding tissues</span></label>
+  </div>
+</div>
+
+<!-- Q25 -->
+<div class="question-card" id="q25">
+  <div class="q-header">
+    <div class="q-number section-s">25</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Analyse</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-21c">Critical Thinking</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(25)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">A stroke occurs when "critical blood flow to the brain is blocked." Given that the brain requires constant oxygen supply, which blood component's function is most directly impaired during a stroke?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q25" value="A"><span class="option-label">A. Plasma's transport of nutrients</span></label>
+    <label class="option"><input type="radio" name="q25" value="B"><span class="option-label">B. RBCs' delivery of oxygen via hemoglobin</span></label>
+    <label class="option"><input type="radio" name="q25" value="C"><span class="option-label">C. WBCs' immune defense mechanism</span></label>
+    <label class="option"><input type="radio" name="q25" value="D"><span class="option-label">D. Platelets' clotting cascade</span></label>
+  </div>
+</div>
+
+<!-- Q26 -->
+<div class="question-card" id="q26">
+  <div class="q-header">
+    <div class="q-number section-s">26</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Apply</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-21c">Data Literacy</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(26)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">From the compatibility matrix, how many different donor blood types can a person with <strong>AB+</strong> safely receive?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q26" value="A"><span class="option-label">A. 2</span></label>
+    <label class="option"><input type="radio" name="q26" value="B"><span class="option-label">B. 4</span></label>
+    <label class="option"><input type="radio" name="q26" value="C"><span class="option-label">C. 6</span></label>
+    <label class="option"><input type="radio" name="q26" value="D"><span class="option-label">D. 8</span></label>
+  </div>
+</div>
+
+<!-- Q27 -->
+<div class="question-card" id="q27">
+  <div class="q-header">
+    <div class="q-number section-s">27</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Analyse</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-21c">Systems Thinking</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(27)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">The passage states that the circulatory system "keeps all body cells supplied with what they need to live while actively removing toxic byproducts." This dual function best demonstrates which concept?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q27" value="A"><span class="option-label">A. Homeostasis — maintaining internal balance</span></label>
+    <label class="option"><input type="radio" name="q27" value="B"><span class="option-label">B. Photosynthesis — energy conversion</span></label>
+    <label class="option"><input type="radio" name="q27" value="C"><span class="option-label">C. Mitosis — cell division</span></label>
+    <label class="option"><input type="radio" name="q27" value="D"><span class="option-label">D. Osmosis — water movement</span></label>
+  </div>
+</div>
+
+<!-- Q28 -->
+<div class="question-card" id="q28">
+  <div class="q-header">
+    <div class="q-number section-s">28</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Apply</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-5e">Explore</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(28)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">RBCs are described as "round, disc-shaped cells resembling tiny doughnuts without holes." This unique morphology is primarily adapted for:</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q28" value="A"><span class="option-label">A. Fighting bacterial infections</span></label>
+    <label class="option"><input type="radio" name="q28" value="B"><span class="option-label">B. Maximizing surface area for gas exchange and flexible passage through narrow capillaries</span></label>
+    <label class="option"><input type="radio" name="q28" value="C"><span class="option-label">C. Producing antibodies against pathogens</span></label>
+    <label class="option"><input type="radio" name="q28" value="D"><span class="option-label">D. Forming clots to stop bleeding</span></label>
+  </div>
+</div>
+
+<!-- Q29 -->
+<div class="question-card" id="q29">
+  <div class="q-header">
+    <div class="q-number section-s">29</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Analyse</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-21c">Clinical Reasoning</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(29)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">A patient with <strong>heart disease</strong> has blocked blood flow to the heart muscle itself. Which vessels are most likely affected?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q29" value="A"><span class="option-label">A. Pulmonary veins</span></label>
+    <label class="option"><input type="radio" name="q29" value="B"><span class="option-label">B. Coronary arteries</span></label>
+    <label class="option"><input type="radio" name="q29" value="C"><span class="option-label">C. Jugular veins</span></label>
+    <label class="option"><input type="radio" name="q29" value="D"><span class="option-label">D. Capillary beds in the fingers</span></label>
+  </div>
+</div>
+
+<!-- Q30 -->
+<div class="question-card" id="q30">
+  <div class="q-header">
+    <div class="q-number section-s">30</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Analyse</span>
+        <span class="q-tag tag-ksa">Skill</span>
+        <span class="q-tag tag-21c">Evidence-Based Reasoning</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(30)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">The passage concludes: "Safe biological intervention requires a deep understanding of both the system's macro-architecture and its microscopic markers." Which pair best represents these two levels?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q30" value="A"><span class="option-label">A. Heart chambers (macro) and blood type antigens (micro)</span></label>
+    <label class="option"><input type="radio" name="q30" value="B"><span class="option-label">B. Blood pressure (macro) and body temperature (micro)</span></label>
+    <label class="option"><input type="radio" name="q30" value="C"><span class="option-label">C. Pulse rate (macro) and breathing rate (micro)</span></label>
+    <label class="option"><input type="radio" name="q30" value="D"><span class="option-label">D. Bone structure (macro) and muscle fibers (micro)</span></label>
+  </div>
+</div>
+
+<!-- ═══════════════ SECTION 3: APTITUDE (Q31–45) ═══════════════ -->
+<div class="section-banner aptitude">
+  <h2>📕 Section C — Aptitude</h2>
+  <div class="section-desc">Evaluation, synthesis, and creative application. Higher-order thinking, clinical scenario analysis, and 21st-century problem-solving.</div>
+  <div class="section-meta">
+    <span>🧠 Bloom's: Evaluate & Create</span>
+    <span>📊 K-S-A: Aptitude</span>
+    <span>🚀 21st Century Skills</span>
+    <span>❓ 15 Questions</span>
+  </div>
+</div>
+
+<!-- Q31 -->
+<div class="question-card" id="q31">
+  <div class="q-header">
+    <div class="q-number section-a">31</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Evaluate</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Clinical Reasoning</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(31)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="passage-box">
+    <div class="passage-title">Clinical Scenario:</div>
+    A 65-year-old patient arrives at the emergency room with chest pain, shortness of breath, and cold sweats. An ECG shows irregular heart rhythm. Blood tests reveal elevated troponin levels, indicating heart muscle damage.
+  </div>
+  <div class="q-text">Based on the passage's description of heart disease and the circulatory system, which is the <strong>most likely</strong> diagnosis?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q31" value="A"><span class="option-label">A. Anemia — insufficient RBCs</span></label>
+    <label class="option"><input type="radio" name="q31" value="B"><span class="option-label">B. Stroke — blocked blood flow to the brain</span></label>
+    <label class="option"><input type="radio" name="q31" value="C"><span class="option-label">C. Myocardial infarction — blocked coronary arteries causing heart muscle damage</span></label>
+    <label class="option"><input type="radio" name="q31" value="D"><span class="option-label">D. Hypertension — elevated blood pressure</span></label>
+  </div>
+</div>
+
+<!-- Q32 -->
+<div class="question-card" id="q32">
+  <div class="q-header">
+    <div class="q-number section-a">32</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Evaluate</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Ethical Reasoning</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(32)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">A hospital has a limited blood supply during a disaster. Three patients need transfusions: Patient X (O−), Patient Y (AB+), Patient Z (A+). Only 2 units of O− blood and 1 unit of A+ blood are available. Which allocation strategy maximizes lives saved?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q32" value="A"><span class="option-label">A. Give both O− units to Patient X; give A+ to Patient Z</span></label>
+    <label class="option"><input type="radio" name="q32" value="B"><span class="option-label">B. Give 1 O− to each patient (X, Y, Z)</span></label>
+    <label class="option"><input type="radio" name="q32" value="C"><span class="option-label">C. Give 1 O− to Patient X, 1 O− to Patient Z; give A+ to Patient Z</span></label>
+    <label class="option"><input type="radio" name="q32" value="D"><span class="option-label">D. Give both O− to Patient Y (AB+); give A+ to Patient Z</span></label>
+  </div>
+</div>
+
+<!-- Q33 -->
+<div class="question-card" id="q33">
+  <div class="q-header">
+    <div class="q-number section-a">33</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Create</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Design Thinking</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(33)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">If you were designing an artificial heart valve replacement, which property of the <strong>tricuspid valve</strong> would be the most critical to replicate?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q33" value="A"><span class="option-label">A. Its ability to oxygenate blood</span></label>
+    <label class="option"><input type="radio" name="q33" value="B"><span class="option-label">B. Its one-way opening mechanism to prevent backflow between atrium and ventricle</span></label>
+    <label class="option"><input type="radio" name="q33" value="C"><span class="option-label">C. Its elastic walls that absorb pressure surges</span></label>
+    <label class="option"><input type="radio" name="q33" value="D"><span class="option-label">D. Its ability to produce antibodies</span></label>
+  </div>
+</div>
+
+<!-- Q34 -->
+<div class="question-card" id="q34">
+  <div class="q-header">
+    <div class="q-number section-a">34</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Evaluate</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Critical Thinking</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(34)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">A student claims: "Since AB+ is the Universal Recipient, AB+ blood can be given to anyone." Evaluate this statement.</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q34" value="A"><span class="option-label">A. Correct — AB+ has no antibodies, so it is safe for all recipients</span></label>
+    <label class="option"><input type="radio" name="q34" value="B"><span class="option-label">B. Incorrect — AB+ can receive from anyone, but cannot donate to all types due to its A, B, and Rh markers</span></label>
+    <label class="option"><input type="radio" name="q34" value="C"><span class="option-label">C. Correct — the Rh factor makes it universally compatible</span></label>
+    <label class="option"><input type="radio" name="q34" value="D"><span class="option-label">D. Incorrect — AB+ can only donate to AB+ patients</span></label>
+  </div>
+</div>
+
+<!-- Q35 -->
+<div class="question-card" id="q35">
+  <div class="q-header">
+    <div class="q-number section-a">35</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Analyse</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Systems Thinking</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(35)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">The passage describes a dual circulatory loop (pulmonary and systemic). If the right ventricle weakened and could not pump effectively, which immediate consequence would occur?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q35" value="A"><span class="option-label">A. Blood would back up into the systemic circulation, causing swelling in the body</span></label>
+    <label class="option"><input type="radio" name="q35" value="B"><span class="option-label">B. Blood would back up into the pulmonary circulation, causing fluid in the lungs</span></label>
+    <label class="option"><input type="radio" name="q35" value="C"><span class="option-label">C. The left ventricle would compensate and no symptoms would appear</span></label>
+    <label class="option"><input type="radio" name="q35" value="D"><span class="option-label">D. Blood oxygen levels would immediately increase</span></label>
+  </div>
+</div>
+
+<!-- Q36 -->
+<div class="question-card" id="q36">
+  <div class="q-header">
+    <div class="q-number section-a">36</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Create</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Innovation</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(36)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">A biomedical engineer wants to create an artificial capillary for tissue engineering. Based on the passage, which design feature would be <strong>most essential</strong>?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q36" value="A"><span class="option-label">A. Thick, muscular walls to withstand high pressure</span></label>
+    <label class="option"><input type="radio" name="q36" value="B"><span class="option-label">B. Ultra-thin, permeable walls to allow nutrient and gas diffusion</span></label>
+    <label class="option"><input type="radio" name="q36" value="C"><span class="option-label">C. One-way valves to prevent backflow</span></label>
+    <label class="option"><input type="radio" name="q36" value="D"><span class="option-label">D. Elastic walls to absorb heart contractions</span></label>
+  </div>
+</div>
+
+<!-- Q37 -->
+<div class="question-card" id="q37">
+  <div class="q-header">
+    <div class="q-number section-a">37</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Evaluate</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Evidence-Based Reasoning</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(37)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">A health article claims: "Drinking 8 glasses of water daily prevents hypertension." Using knowledge from the passage about hypertension, evaluate this claim.</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q37" value="A"><span class="option-label">A. Fully supported — water directly reduces blood pressure</span></label>
+    <label class="option"><input type="radio" name="q37" value="B"><span class="option-label">B. Partially true — hydration supports overall cardiovascular health but hypertension has multiple causes including vessel damage and heart workload</span></label>
+    <label class="option"><input type="radio" name="q37" value="C"><span class="option-label">C. Completely false — water has no effect on the circulatory system</span></label>
+    <label class="option"><input type="radio" name="q37" value="D"><span class="option-label">D. True only for patients with anemia</span></label>
+  </div>
+</div>
+
+<!-- Q38 -->
+<div class="question-card" id="q38">
+  <div class="q-header">
+    <div class="q-number section-a">38</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Evaluate</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Clinical Reasoning</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(38)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">A patient's lab results show: WBC count significantly elevated, high neutrophil percentage, and elevated temperature. Which condition is most likely?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q38" value="A"><span class="option-label">A. Anemia — low RBC count</span></label>
+    <label class="option"><input type="radio" name="q38" value="B"><span class="option-label">B. Active bacterial infection — immune system mobilizing neutrophils</span></label>
+    <label class="option"><input type="radio" name="q38" value="C"><span class="option-label">C. Blood clotting disorder — platelet malfunction</span></label>
+    <label class="option"><input type="radio" name="q38" value="D"><span class="option-label">D. Dehydration — concentrated blood</span></label>
+  </div>
+</div>
+
+<!-- Q39 -->
+<div class="question-card" id="q39">
+  <div class="q-header">
+    <div class="q-number section-a">39</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Create</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Communication</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(39)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">You need to explain the circulatory system to a 10-year-old child. Which analogy would best capture the relationship between heart, blood, and blood vessels?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q39" value="A"><span class="option-label">A. A factory (heart) sending delivery trucks (blood) through a road network (vessels)</span></label>
+    <label class="option"><input type="radio" name="q39" value="B"><span class="option-label">B. A computer (heart) running software (blood) on hardware (vessels)</span></label>
+    <label class="option"><input type="radio" name="q39" value="C"><span class="option-label">C. A library (heart) organizing books (blood) on shelves (vessels)</span></label>
+    <label class="option"><input type="radio" name="q39" value="D"><span class="option-label">D. A garden (heart) watering plants (blood) with hoses (vessels)</span></label>
+  </div>
+</div>
+
+<!-- Q40 -->
+<div class="question-card" id="q40">
+  <div class="q-header">
+    <div class="q-number section-a">40</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Evaluate</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Data Literacy</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(40)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Study the blood composition data: Plasma 55%, RBCs 45%, WBCs & Platelets &lt;1%. A patient's hematocrit (RBC percentage) is measured at 35%. Compared to normal, this patient has:</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q40" value="A"><span class="option-label">A. Higher than normal RBCs — risk of polycythemia</span></label>
+    <label class="option"><input type="radio" name="q40" value="B"><span class="option-label">B. Lower than normal RBCs — consistent with anemia</span></label>
+    <label class="option"><input type="radio" name="q40" value="C"><span class="option-label">C. Normal RBC levels — within expected range</span></label>
+    <label class="option"><input type="radio" name="q40" value="D"><span class="option-label">D. Elevated plasma levels — risk of hemodilution</span></label>
+  </div>
+</div>
+
+<!-- Q41 -->
+<div class="question-card" id="q41">
+  <div class="q-header">
+    <div class="q-number section-a">41</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Analyse</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Systems Thinking</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(41)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">The passage states that monocytes become macrophages when they move into tissues. This transformation represents which biological principle?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q41" value="A"><span class="option-label">A. Cell specialization — cells differentiating to perform specific functions in different environments</span></label>
+    <label class="option"><input type="radio" name="q41" value="B"><span class="option-label">B. Cell division — rapid multiplication to increase cell numbers</span></label>
+    <label class="option"><input type="radio" name="q41" value="C"><span class="option-label">C. Apoptosis — programmed cell death</span></label>
+    <label class="option"><input type="radio" name="q41" value="D"><span class="option-label">D. Mutation — genetic change in response to environment</span></label>
+  </div>
+</div>
+
+<!-- Q42 -->
+<div class="question-card" id="q42">
+  <div class="q-header">
+    <div class="q-number section-a">42</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Evaluate</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Global Awareness</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(42)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">Blood donation campaigns often emphasize that O− donors are critical. Using the compatibility matrix and your knowledge, which statement best explains why?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q42" value="A"><span class="option-label">A. O− blood is the rarest type and therefore most valuable</span></label>
+    <label class="option"><input type="radio" name="q42" value="B"><span class="option-label">B. O− blood lacks A, B, and Rh antigens, making it compatible with all 8 blood types in emergencies</span></label>
+    <label class="option"><input type="radio" name="q42" value="C"><span class="option-label">C. O− blood contains more hemoglobin than other types</span></label>
+    <label class="option"><input type="radio" name="q42" value="D"><span class="option-label">D. O− blood clots faster, reducing transfusion time</span></label>
+  </div>
+</div>
+
+<!-- Q43 -->
+<div class="question-card" id="q43">
+  <div class="q-header">
+    <div class="q-number section-a">43</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Create</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Design Thinking</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(43)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">If you were creating a public health infographic to reduce heart disease, which three key messages from the passage would be most impactful?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q43" value="A"><span class="option-label">A. Know your blood type, exercise daily, drink water</span></label>
+    <label class="option"><input type="radio" name="q43" value="B"><span class="option-label">B. Monitor blood pressure, maintain healthy cholesterol (reduce vessel blockage), recognize stroke/heart attack symptoms early</span></label>
+    <label class="option"><input type="radio" name="q43" value="C"><span class="option-label">C. Avoid all fats, take antibiotics, sleep 12 hours</span></label>
+    <label class="option"><input type="radio" name="q43" value="D"><span class="option-label">D. Donate blood regularly, check WBC count, avoid cold weather</span></label>
+  </div>
+</div>
+
+<!-- Q44 -->
+<div class="question-card" id="q44">
+  <div class="q-header">
+    <div class="q-number section-a">44</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Evaluate</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Critical Thinking</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(44)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">The passage describes four pathologies: heart disease, hypertension, stroke, and anemia. Which pair shares the most direct causal relationship based on the information provided?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q44" value="A"><span class="option-label">A. Hypertension and stroke — high blood pressure can damage vessels and block blood flow to the brain</span></label>
+    <label class="option"><input type="radio" name="q44" value="B"><span class="option-label">B. Anemia and heart disease — low RBCs directly block coronary arteries</span></label>
+    <label class="option"><input type="radio" name="q44" value="C"><span class="option-label">C. Stroke and anemia — brain damage reduces RBC production</span></label>
+    <label class="option"><input type="radio" name="q44" value="D"><span class="option-label">D. Heart disease and anemia — heart blocks prevent hemoglobin synthesis</span></label>
+  </div>
+</div>
+
+<!-- Q45 -->
+<div class="question-card" id="q45">
+  <div class="q-header">
+    <div class="q-number section-a">45</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div class="q-tags">
+        <span class="q-tag tag-bloom">Create</span>
+        <span class="q-tag tag-ksa">Aptitude</span>
+        <span class="q-tag tag-21c">Synthesis</span>
+      </div>
+      <button class="flag-btn" onclick="toggleFlag(45)">🚩 Flag</button>
+    </div>
+  </div>
+  <div class="q-text">The passage concludes that "the Integrated Circulatory System" requires understanding at three levels: the complex medium, the mechanical pump, and the infrastructure network. If one component failed completely, which failure would be <strong>most immediately life-threatening</strong> and why?</div>
+  <div class="options">
+    <label class="option"><input type="radio" name="q45" value="A"><span class="option-label">A. Failure of the medium (blood) — without blood, no transport occurs regardless of pump or vessels</span></label>
+    <label class="option"><input type="radio" name="q45" value="B"><span class="option-label">B. Failure of the pump (heart) — without the driving pressure, blood cannot circulate even if vessels and blood are normal</span></label>
+    <label class="option"><input type="radio" name="q45" value="C"><span class="option-label">C. Failure of the network (vessels) — without pathways, blood has nowhere to go</span></label>
+    <label class="option"><input type="radio" name="q45" value="D"><span class="option-label">D. All three failures are equally life-threatening at the same moment</span></label>
+  </div>
+</div>
+
+</div><!-- end section-container -->
+
+<!-- SUBMIT -->
+<div class="submit-area">
+  <p style="margin-bottom:1rem;color:#6B7280;font-size:0.9rem;">Review your answers before submitting. You can flag questions for review.</p>
+  <button class="submit-btn" id="submitBtn" onclick="submitExam()">📝 SUBMIT EXAMINATION</button>
+</div>
+
+<!-- NAV DOTS -->
+<div class="nav-dots" id="navDots"></div>
+
+<!-- RESULTS OVERLAY -->
+<div class="results-overlay" id="resultsOverlay">
+  <div class="results-card" id="resultsCard">
+    <!-- Filled by JS -->
+  </div>
+</div>
+
+<script>
+// ═══════════════ ANSWER KEY ═══════════════
+const ANSWERS = {
+  1:'B', 2:'B', 3:'C', 4:'A', 5:'B', 6:'C', 7:'A', 8:'C', 9:'A', 10:'C',
+  11:'C', 12:'B', 13:'C', 14:'C', 15:'B', 16:'C', 17:'C', 18:'B', 19:'B',
+  20:'B', 21:'B', 22:'B', 23:'B', 24:'B', 25:'B', 26:'D', 27:'A', 28:'B',
+  29:'B', 30:'A', 31:'C', 32:'C', 33:'B', 34:'B', 35:'B', 36:'B', 37:'B',
+  38:'B', 39:'A', 40:'B', 41:'A', 42:'B', 43:'B', 44:'A', 45:'B'
+};
+
+const BLOOM_LEVELS = {
+  1:'Remember',2:'Remember',3:'Remember',4:'Understand',5:'Remember',6:'Remember',
+  7:'Understand',8:'Understand',9:'Understand',10:'Remember',11:'Remember',
+  12:'Understand',13:'Remember',14:'Understand',15:'Remember',
+  16:'Apply',17:'Analyse',18:'Apply',19:'Analyse',20:'Apply',21:'Analyse',
+  22:'Apply',23:'Analyse',24:'Apply',25:'Analyse',26:'Apply',27:'Analyse',
+  28:'Apply',29:'Analyse',30:'Analyse',
+  31:'Evaluate',32:'Evaluate',33:'Create',34:'Evaluate',35:'Analyse',36:'Create',
+  37:'Evaluate',38:'Evaluate',39:'Create',40:'Evaluate',41:'Analyse',42:'Evaluate',
+  43:'Create',44:'Evaluate',45:'Create'
+};
+
+const SECTION_MAP = {};
+for(let i=1;i<=15;i++) SECTION_MAP[i]='Knowledge';
+for(let i=16;i<=30;i++) SECTION_MAP[i]='Skill';
+for(let i=31;i<=45;i++) SECTION_MAP[i]='Aptitude';
+
+// ═══════════════ STATE ═══════════════
+let userAnswers = {};
+let flagged = {};
+let examSubmitted = false;
+let timerSeconds = 40 * 60;
+let timerInterval;
+
+// ═══════════════ TIMER ═══════════════
+function startTimer() {
+  const display = document.getElementById('timerDisplay');
+  const bar = document.getElementById('timerBar');
+  timerInterval = setInterval(() => {
+    if(examSubmitted) { clearInterval(timerInterval); return; }
+    timerSeconds--;
+    if(timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      submitExam();
+      return;
+    }
+    const m = Math.floor(timerSeconds/60);
+    const s = timerSeconds%60;
+    display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if(timerSeconds <= 300) { bar.className='timer-bar critical'; }
+    else if(timerSeconds <= 600) { bar.className='timer-bar warning'; }
+  }, 1000);
+}
+
+// ═══════════════ OPTION SELECTION ═══════════════
+document.querySelectorAll('.option').forEach(opt => {
+  opt.addEventListener('click', function() {
+    if(examSubmitted) return;
+    const card = this.closest('.question-card');
+    const radio = this.querySelector('input[type="radio"]');
+    radio.checked = true;
+    // Remove previous selection
+    card.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    this.classList.add('selected');
+    card.classList.add('answered');
+    const qNum = parseInt(card.id.replace('q',''));
+    userAnswers[qNum] = radio.value;
+    updateProgress();
+    updateNavDots();
+  });
+});
+
+// ═══════════════ FLAG ═══════════════
+function toggleFlag(n) {
+  if(examSubmitted) return;
+  flagged[n] = !flagged[n];
+  document.getElementById('q'+n).classList.toggle('flagged');
+  updateNavDots();
+}
+
+// ═══════════════ PROGRESS ═══════════════
+function updateProgress() {
+  const answered = Object.keys(userAnswers).length;
+  const pct = (answered/45)*100;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressText').textContent = `${answered} / 45 answered`;
+}
+
+// ═══════════════ NAV DOTS ═══════════════
+function buildNavDots() {
+  const container = document.getElementById('navDots');
+  for(let i=1;i<=45;i++) {
+    const dot = document.createElement('button');
+    dot.className = 'nav-dot';
+    dot.id = 'dot'+i;
+    dot.title = 'Q'+i;
+    dot.onclick = () => document.getElementById('q'+i).scrollIntoView({behavior:'smooth',block:'center'});
+    container.appendChild(dot);
+  }
+}
+function updateNavDots() {
+  for(let i=1;i<=45;i++) {
+    const dot = document.getElementById('dot'+i);
+    dot.className = 'nav-dot';
+    if(userAnswers[i]) dot.classList.add('answered');
+    if(flagged[i]) dot.classList.add('flagged');
+  }
+}
+
+// ═══════════════ SUBMIT ═══════════════
+function submitExam() {
+  if(examSubmitted) return;
+  const unanswered = 45 - Object.keys(userAnswers).length;
+  if(unanswered > 0 && timerSeconds > 0) {
+    if(!confirm(`You have ${unanswered} unanswered question(s). Submit anyway?`)) return;
+  }
+  examSubmitted = true;
+  clearInterval(timerInterval);
+  
+  // Calculate scores
+  let totalCorrect = 0;
+  const sectionScores = {Knowledge:{correct:0,total:15}, Skill:{correct:0,total:15}, Aptitude:{correct:0,total:15}};
+  const bloomScores = {};
+  
+  for(let i=1;i<=45;i++) {
+    const bloom = BLOOM_LEVELS[i];
+    if(!bloomScores[bloom]) bloomScores[bloom] = {correct:0,total:0};
+    bloomScores[bloom].total++;
+    
+    if(userAnswers[i] === ANSWERS[i]) {
+      totalCorrect++;
+      sectionScores[SECTION_MAP[i]].correct++;
+      bloomScores[bloom].correct++;
+    }
+  }
+  
+  const pct = Math.round((totalCorrect/45)*100);
+  showResults(totalCorrect, pct, sectionScores, bloomScores);
+}
+
+// ═══════════════ RESULTS ═══════════════
+function showResults(score, pct, sectionScores, bloomScores) {
+  const overlay = document.getElementById('resultsOverlay');
+  const card = document.getElementById('resultsCard');
+  
+  let scoreClass = 'score-poor';
+  let grade = 'Needs Improvement';
+  if(pct >= 80) { scoreClass='score-excellent'; grade='Excellent'; }
+  else if(pct >= 60) { scoreClass='score-good'; grade='Good'; }
+  else if(pct >= 40) { scoreClass='score-fair'; grade='Fair'; }
+  
+  // Build section breakdown
+  let sectionHTML = '';
+  const colors = {Knowledge:'#1E3A5F', Skill:'#065F46', Aptitude:'#B91C1C'};
+  for(const [name, data] of Object.entries(sectionScores)) {
+    const sPct = Math.round((data.correct/data.total)*100);
+    sectionHTML += `
+      <div class="breakdown-row">
+        <div class="breakdown-label" style="color:${colors[name]}">${name}</div>
+        <div class="breakdown-bar"><div class="breakdown-fill" style="width:${sPct}%;background:${colors[name]}"></div></div>
+        <div class="breakdown-score">${data.correct}/${data.total} (${sPct}%)</div>
+      </div>`;
+  }
+  
+  // Build Bloom's breakdown
+  let bloomHTML = '';
+  const bloomOrder = ['Remember','Understand','Apply','Analyse','Evaluate','Create'];
+  const bloomColors = ['#3B82F6','#6366F1','#8B5CF6','#A855F7','#D946EF','#EC4899'];
+  bloomOrder.forEach((b, idx) => {
+    if(bloomScores[b]) {
+      const bPct = Math.round((bloomScores[b].correct/bloomScores[b].total)*100);
+      bloomHTML += `
+        <div class="bloom-card" style="border-color:${bloomColors[idx]}20">
+          <div class="bloom-level">${b}</div>
+          <div class="bloom-score" style="color:${bloomColors[idx]}">${bPct}%</div>
+          <div style="font-size:0.75rem;color:#6B7280">${bloomScores[b].correct}/${bloomScores[b].total}</div>
+        </div>`;
+    }
+  });
+  
+  // Build strengths & weaknesses
+  let strengths = [], weaknesses = [], improvements = [];
+  
+  for(const [name, data] of Object.entries(sectionScores)) {
+    const sPct = Math.round((data.correct/data.total)*100);
+    if(sPct >= 70) strengths.push(`${name}: Strong performance (${sPct}%) — solid understanding demonstrated`);
+    else if(sPct >= 40) weaknesses.push(`${name}: Moderate performance (${sPct}%) — some concepts need reinforcement`);
+    else weaknesses.push(`${name}: Weak performance (${sPct}%) — significant review needed`);
+  }
+  
+  for(const b of bloomOrder) {
+    if(bloomScores[b]) {
+      const bPct = Math.round((bloomScores[b].correct/bloomScores[b].total)*100);
+      if(bPct < 50) improvements.push(`${b} level: ${bPct}% — practice more ${b.toLowerCase()}-order questions`);
+    }
+  }
+  
+  if(improvements.length === 0) improvements.push('Continue practicing higher-order thinking skills (Evaluate & Create)');
+  if(strengths.length === 0) strengths.push('Review foundational concepts before attempting advanced questions');
+  
+  // Wrong questions detail
+  let wrongHTML = '';
+  for(let i=1;i<=45;i++) {
+    if(userAnswers[i] !== ANSWERS[i]) {
+      wrongHTML += `<tr><td>${i}</td><td>${SECTION_MAP[i]}</td><td>${BLOOM_LEVELS[i]}</td><td>${userAnswers[i]||'—'}</td><td>${ANSWERS[i]}</td></tr>`;
+    }
+  }
+  
+  card.innerHTML = `
+    <h2>📊 Examination Results</h2>
+    <p class="results-subtitle">Human Blood Circulatory System — PET-FCE Style Assessment</p>
+    
+    <div class="score-circle ${scoreClass}">
+      ${score}/45
+      <span class="score-label">${grade} — ${pct}%</span>
+    </div>
+    
+    <div class="section-breakdown">
+      <h3>📋 Section Performance</h3>
+      ${sectionHTML}
+    </div>
+    
+    <div class="section-breakdown">
+      <h3>🧠 Bloom's Taxonomy Performance</h3>
+      <div class="bloom-grid">${bloomHTML}</div>
+    </div>
+    
+    <div class="sw-section">
+      <h3>✅ Strengths</h3>
+      ${strengths.map(s=>`<div class="sw-item sw-strength">${s}</div>`).join('')}
+    </div>
+    
+    <div class="sw-section">
+      <h3>⚠️ Areas for Improvement</h3>
+      ${weaknesses.map(w=>`<div class="sw-item sw-weakness">${w}</div>`).join('')}
+    </div>
+    
+    <div class="sw-section">
+      <h3>🎯 Recommended Actions</h3>
+      ${improvements.map(im=>`<div class="sw-item sw-improve">${im}</div>`).join('')}
+    </div>
+    
+    ${wrongHTML ? `
+    <div class="section-breakdown">
+      <h3>📝 Incorrect Questions Review</h3>
+      <table class="info-table" style="font-size:0.85rem">
+        <tr><th>Q#</th><th>Section</th><th>Bloom's</th><th>Your Answer</th><th>Correct</th></tr>
+        ${wrongHTML}
+      </table>
+    </div>` : '<p style="text-align:center;color:#065F46;font-weight:bold;font-size:1.2rem;margin:1rem 0">🎉 Perfect Score! Outstanding performance!</p>'}
+    
+    <div style="text-align:center;margin-top:2rem">
+      <button class="download-btn" onclick="downloadReport()">📄 Download Grading Report (Word)</button>
+      <br>
+      <button class="close-results" onclick="closeResults()">Close & Review Answers</button>
+    </div>
+  `;
+  
+  // Highlight correct/incorrect on the exam
+  for(let i=1;i<=45;i++) {
+    const card = document.getElementById('q'+i);
+    card.querySelectorAll('.option').forEach(opt => {
+      const radio = opt.querySelector('input[type="radio"]');
+      if(radio.value === ANSWERS[i]) opt.classList.add('correct');
+      if(radio.checked && radio.value !== ANSWERS[i]) opt.classList.add('incorrect');
+    });
+  }
+  
+  overlay.classList.add('show');
+  overlay.scrollTop = 0;
+}
+
+function closeResults() {
+  document.getElementById('resultsOverlay').classList.remove('show');
+}
+
+// ═══════════════ WORD REPORT DOWNLOAD ═══════════════
+function downloadReport() {
+  // Calculate data
+  let totalCorrect = 0;
+  const sectionScores = {Knowledge:{correct:0,total:15,wrong:[]}, Skill:{correct:0,total:15,wrong:[]}, Aptitude:{correct:0,total:15,wrong:[]}};
+  const bloomScores = {};
+  
+  for(let i=1;i<=45;i++) {
+    const bloom = BLOOM_LEVELS[i];
+    if(!bloomScores[bloom]) bloomScores[bloom] = {correct:0,total:0,wrong:[]};
+    bloomScores[bloom].total++;
+    
+    if(userAnswers[i] === ANSWERS[i]) {
+      totalCorrect++;
+      sectionScores[SECTION_MAP[i]].correct++;
+      bloomScores[bloom].correct++;
+    } else {
+      sectionScores[SECTION_MAP[i]].wrong.push(i);
+      bloomScores[bloom].wrong.push(i);
+    }
+  }
+  
+  const pct = Math.round((totalCorrect/45)*100);
+  let grade = 'Needs Improvement';
+  if(pct >= 80) grade = 'Excellent';
+  else if(pct >= 60) grade = 'Good';
+  else if(pct >= 40) grade = 'Fair';
+  
+  // Build HTML for Word document
+  let html = `
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.6; color: #333; margin: 1in; }
+  h1 { color: #1E3A5F; font-size: 18pt; text-align: center; border-bottom: 3px solid #1E3A5F; padding-bottom: 8pt; }
+  h2 { color: #1E3A5F; font-size: 14pt; border-bottom: 1px solid #ccc; padding-bottom: 4pt; margin-top: 24pt; }
+  h3 { color: #065F46; font-size: 12pt; margin-top: 16pt; }
+  table { border-collapse: collapse; width: 100%; margin: 8pt 0; font-size: 11pt; }
+  th { background: #1E3A5F; color: white; padding: 6pt 10pt; text-align: left; }
+  td { padding: 5pt 10pt; border-bottom: 1px solid #ddd; }
+  tr:nth-child(even) { background: #f8f9fa; }
+  .strength { background: #D1FAE5; color: #065F46; padding: 6pt 10pt; margin: 4pt 0; border-left: 3px solid #10B981; }
+  .weakness { background: #FEE2E2; color: #991B1B; padding: 6pt 10pt; margin: 4pt 0; border-left: 3px solid #EF4444; }
+  .improve { background: #DBEAFE; color: #1E40AF; padding: 6pt 10pt; margin: 4pt 0; border-left: 3px solid #3B82F6; }
+  .score-box { text-align: center; font-size: 24pt; font-weight: bold; color: #1E3A5F; margin: 16pt 0; }
+  .meta { font-size: 10pt; color: #666; text-align: center; }
+</style>
+</head>
+<body>
+<h1>GRADING REPORT<br>Circulatory System Examination</h1>
+<p class="meta">PET-FCE Style Assessment | K-S-A Framework | Bloom's Taxonomy | 21st Century Skills</p>
+<p class="meta">Date: ${new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'})}</p>
+
+<div class="score-box">${score = totalCorrect}/45 (${pct}%) — ${grade}</div>
+
+<h2>1. Overall Performance Summary</h2>
+<table>
+<tr><th>Section</th><th>Score</th><th>Percentage</th><th>Performance Level</th></tr>`;
+
+  for(const [name, data] of Object.entries(sectionScores)) {
+    const sPct = Math.round((data.correct/data.total)*100);
+    let level = 'Excellent';
+    if(sPct < 40) level = 'Needs Improvement';
+    else if(sPct < 60) level = 'Fair';
+    else if(sPct < 80) level = 'Good';
+    html += `<tr><td><strong>${name}</strong></td><td>${data.correct}/${data.total}</td><td>${sPct}%</td><td>${level}</td></tr>`;
+  }
+  
+  html += `</table>
+
+<h2>2. Bloom's Taxonomy Analysis</h2>
+<table>
+<tr><th>Cognitive Level</th><th>Score</th><th>Percentage</th><th>Status</th></tr>`;
+  
+  const bloomOrder = ['Remember','Understand','Apply','Analyse','Evaluate','Create'];
+  for(const b of bloomOrder) {
+    if(bloomScores[b]) {
+      const bPct = Math.round((bloomScores[b].correct/bloomScores[b].total)*100);
+      const status = bPct >= 70 ? '✅ Strong' : bPct >= 40 ? '⚠️ Developing' : '❌ Needs Work';
+      html += `<tr><td>${b}</td><td>${bloomScores[b].correct}/${bloomScores[b].total}</td><td>${bPct}%</td><td>${status}</td></tr>`;
+    }
+  }
+  
+  html += `</table>
+
+<h2>3. Section-by-Section Analysis</h2>`;
+
+  for(const [name, data] of Object.entries(sectionScores)) {
+    const sPct = Math.round((data.correct/data.total)*100);
+    html += `<h3>Section: ${name}</h3>`;
+    html += `<p><strong>Score:</strong> ${data.correct}/${data.total} (${sPct}%)</p>`;
+    
+    if(sPct >= 70) {
+      html += `<div class="strength"><strong>Strength:</strong> Demonstrates solid understanding of ${name.toLowerCase()} concepts. Student effectively recalls and applies core circulatory system knowledge.</div>`;
+    } else if(sPct >= 40) {
+      html += `<div class="weakness"><strong>Area of Concern:</strong> Moderate performance in ${name.toLowerCase()} — some foundational concepts require reinforcement.</div>`;
+    } else {
+      html += `<div class="weakness"><strong>Weakness:</strong> Significant gaps in ${name.toLowerCase()} understanding. Targeted intervention recommended.</div>`;
+    }
+    
+    if(data.wrong.length > 0) {
+      html += `<p><strong>Questions answered incorrectly:</strong> ${data.wrong.map(q=>`Q${q}`).join(', ')}</p>`;
+    }
+  }
+
+  html += `<h2>4. Strengths</h2>`;
+  
+  for(const [name, data] of Object.entries(sectionScores)) {
+    const sPct = Math.round((data.correct/data.total)*100);
+    if(sPct >= 70) {
+      html += `<div class="strength">✅ <strong>${name}:</strong> ${sPct}% — Strong performance demonstrating effective comprehension and application of circulatory system principles.</div>`;
+    }
+  }
+  
+  for(const b of bloomOrder) {
+    if(bloomScores[b]) {
+      const bPct = Math.round((bloomScores[b].correct/bloomScores[b].total)*100);
+      if(bPct >= 70) {
+        html += `<div class="strength">✅ <strong>${b} Level:</strong> ${bPct}% — Competent at ${b.toLowerCase()}-order cognitive tasks.</div>`;
+      }
+    }
+  }
+
+  html += `<h2>5. Weaknesses</h2>`;
+  
+  for(const [name, data] of Object.entries(sectionScores)) {
+    const sPct = Math.round((data.correct/data.total)*100);
+    if(sPct < 70) {
+      html += `<div class="weakness">⚠️ <strong>${name}:</strong> ${sPct}% — Requires additional study and practice in this area.</div>`;
+    }
+  }
+  
+  for(const b of bloomOrder) {
+    if(bloomScores[b]) {
+      const bPct = Math.round((bloomScores[b].correct/bloomScores[b].total)*100);
+      if(bPct < 50) {
+        html += `<div class="weakness">⚠️ <strong>${b} Level:</strong> ${bPct}% — ${b}-order thinking skills need development.</div>`;
+      }
+    }
+  }
+
+  html += `<h2>6. Areas for Improvement & Recommendations</h2>`;
+  
+  // Knowledge recommendations
+  const kPct = Math.round((sectionScores.Knowledge.correct/15)*100);
+  if(kPct < 70) {
+    html += `<div class="improve">📘 <strong>Knowledge:</strong> Review foundational facts — heart structure, blood components (plasma, RBCs, WBCs, platelets), vessel types, and blood classification systems. Use flashcards and labeled diagrams for memorization.</div>`;
+  }
+  
+  // Skill recommendations
+  const sPct = Math.round((sectionScores.Skill.correct/15)*100);
+  if(sPct < 70) {
+    html += `<div class="improve">📗 <strong>Skill:</strong> Practice applying knowledge to clinical scenarios. Work on data interpretation (compatibility matrices, lab results) and tracing blood flow pathways. Engage with case studies and problem-based learning activities.</div>`;
+  }
+  
+  // Aptitude recommendations
+  const aPct = Math.round((sectionScores.Aptitude.correct/15)*100);
+  if(aPct < 70) {
+    html += `<div class="improve">📕 <strong>Aptitude:</strong> Develop higher-order thinking by analyzing clinical scenarios, evaluating health claims with evidence, and designing solutions to biomedical problems. Practice Bloom's Evaluate and Create level tasks.</div>`;
+  }
+  
+  html += `<div class="improve">🎯 <strong>General:</strong> Re-examine all incorrectly answered questions (see Section 7 below). Focus on understanding <em>why</em> the correct answer is right, not just memorizing it.</div>`;
+
+  html += `<h2>7. Incorrect Questions — Detailed Review</h2>`;
+  html += `<table><tr><th>Q#</th><th>Section</th><th>Bloom's Level</th><th>Your Answer</th><th>Correct Answer</th><th>Review Focus</th></tr>`;
+  
+  const reviewFocus = {
+    'Remember': 'Review the factual detail from the passage',
+    'Understand': 'Re-read and ensure comprehension of the concept',
+    'Apply': 'Practice applying this concept to new scenarios',
+    'Analyse': 'Break down the relationships between components',
+    'Evaluate': 'Practice judging claims using evidence',
+    'Create': 'Practice synthesizing knowledge into new solutions'
+  };
+  
+  for(let i=1;i<=45;i++) {
+    if(userAnswers[i] !== ANSWERS[i]) {
+      html += `<tr><td>Q${i}</td><td>${SECTION_MAP[i]}</td><td>${BLOOM_LEVELS[i]}</td><td>${userAnswers[i]||'Unanswered'}</td><td>${ANSWERS[i]}</td><td>${reviewFocus[BLOOM_LEVELS[i]]}</td></tr>`;
+    }
+  }
+  html += `</table>`;
+
+  html += `
+<h2>8. Conclusion</h2>
+<p>This examination assessed the student's understanding of the Human Blood Circulatory System across three dimensions: <strong>Knowledge</strong> (factual recall and comprehension), <strong>Skill</strong> (application and analysis), and <strong>Aptitude</strong> (evaluation and creative problem-solving). The assessment was designed according to the K-S-A framework, Bloom's Taxonomy, 5E+PBL instructional framework, and 21st-century skills, following the PET-FCE examination style.</p>
+<p>Overall performance: <strong>${pct}% (${grade})</strong>. ${pct >= 80 ? 'The student demonstrates excellent mastery of circulatory system concepts across all cognitive levels.' : pct >= 60 ? 'The student shows good foundational understanding with room for improvement in higher-order thinking skills.' : pct >= 40 ? 'The student has a fair understanding but needs targeted intervention to strengthen both knowledge recall and analytical skills.' : 'The student requires significant additional support across multiple areas. A structured review plan is recommended.'}</p>
+<p class="meta" style="margin-top:30pt;border-top:1px solid #ccc;padding-top:8pt">Generated by Automated Assessment System | Circulatory System PET-FCE Examination</p>
+</body></html>`;
+
+  // Create and download
+  const blob = new Blob([html], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Circulatory_System_Grading_Report.doc';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ═══════════════ INIT ═══════════════
+buildNavDots();
+startTimer();
+</script>
+</body>
+</html>
